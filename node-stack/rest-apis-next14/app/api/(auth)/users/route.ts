@@ -25,11 +25,11 @@ export const POST = async (request: Request) => {
     await newUser.save();
 
     return new NextResponse(
-      JSON.stringify({ message: "User is created", user: newUser }),
+      JSON.stringify({ message: "User is created ", user: newUser }),
       { status: 200 }
     );
   } catch (error: any) {
-    return new NextResponse("Error in creating user" + error.message, {
+    return new NextResponse("Error in creating user " + error.message, {
       status: 500,
     });
   }
