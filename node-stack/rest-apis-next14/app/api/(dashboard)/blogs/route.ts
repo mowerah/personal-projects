@@ -70,7 +70,7 @@ export const POST = async (request: Request) => {
     const categoryId = searchParams.get("categoryId");
 
     const body = await request.json();
-    const { title } = body;
+    const { title, description } = body;
 
     if (!userId || !Types.ObjectId.isValid(userId)) {
       return new NextResponse(
@@ -111,6 +111,7 @@ export const POST = async (request: Request) => {
 
     const newblog = new Blog({
       title,
+      description,
       user: new Types.ObjectId(userId),
       category: new Types.ObjectId(categoryId),
     });
