@@ -10,6 +10,8 @@ export const GET = async (request: Request) => {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId");
     const categoryId = searchParams.get("categoryId");
+    const searchKeywords = searchParams.get("keywords") as String;
+
     if (!userId || !Types.ObjectId.isValid(userId)) {
       return new NextResponse(
         JSON.stringify({ message: "Invalid or missing userId" }),
@@ -51,6 +53,17 @@ export const GET = async (request: Request) => {
       user: new Types.ObjectId(userId),
       category: new Types.ObjectId(categoryId),
     };
+
+    if (searchKeywords) {
+      filter.$or = [
+        {
+          title: { $regex: searchKeywords, $options: "i" },
+        },
+        {
+          description: { $regex: searchKeywords, $options: "i" },
+        }
+      ];
+    }
 
     // TODO
 
@@ -117,7 +130,10 @@ export const POST = async (request: Request) => {
     });
     await newblog.save();
 
-    return new NextResponse(JSON.stringify({ message: "Blog is created", blog: newblog}), { status: 200 });
+    return new NextResponse(
+      JSON.stringify({ message: "Blog is created", blog: newblog }),
+      { status: 200 }
+    );
   } catch (error: any) {
     return new NextResponse("Error in creating a blog. " + error.message, {
       status: 500,
