@@ -82,9 +82,7 @@ export const GET = async (request: Request) => {
       };
     }
 
-    // TODO
-
-    const blogs = await Blog.find(filter);
+    const blogs = await Blog.find(filter).sort({ createdAt: "asc" });
     return new NextResponse(JSON.stringify({ blogs }), { status: 200 });
   } catch (error: any) {
     return new NextResponse("Error in fetching blogs. " + error.message, {
