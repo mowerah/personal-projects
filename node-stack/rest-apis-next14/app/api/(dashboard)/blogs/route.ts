@@ -13,6 +13,8 @@ export const GET = async (request: Request) => {
     const searchKeywords = searchParams.get("keywords") as String;
     const startDate = searchParams.get("startDate");
     const endDate = searchParams.get("endDate");
+    const page: any = parseInt(searchParams.get("page") || "1");
+    const limit: any = parseInt(searchParams.get("limit") || "10");
 
     if (!userId || !Types.ObjectId.isValid(userId)) {
       return new NextResponse(
@@ -82,7 +84,12 @@ export const GET = async (request: Request) => {
       };
     }
 
-    const blogs = await Blog.find(filter).sort({ createdAt: "asc" });
+    const skip = (page - 1) * limit;
+
+    const blogs = await Blog.find(filter)
+      .sort({ createdAt: "asc" })
+      .skip(skip)
+      .limit(limit);
     return new NextResponse(JSON.stringify({ blogs }), { status: 200 });
   } catch (error: any) {
     return new NextResponse("Error in fetching blogs. " + error.message, {
